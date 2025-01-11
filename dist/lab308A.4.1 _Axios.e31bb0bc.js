@@ -12269,7 +12269,9 @@ var getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
 // Step 0: Store your API key here for reference and easy access.
 var API_KEY = "live_CqjPzip5jldepfygwt2QTbfQCD2m9U12uCqcrePmGPadzCaDJF0iwbrCcgwMla7T";
-var BASE_URL = "https://api.thecatapi.com/";
+
+//Setting Default headers
+
 _axios.default.defaults.baseURL = "https://api.thecatapi.com/";
 _axios.default.defaults.headers.common["x-api-key"] = API_KEY;
 _axios.default.defaults.headers.post["Content-Type"] = "application/json";
@@ -12281,25 +12283,45 @@ _axios.default.defaults.headers.post["Content-Type"] = "application/json";
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
+
+_axios.default.interceptors.request.use(function (request) {
+  request.metadata = request.metadata || {};
+  request.metadata.startTime = new Date().getTime();
+  document.body.style.cursor = "progress";
+  return request;
+});
+_axios.default.interceptors.response.use(function (response) {
+  document.body.style.cursor = "default";
+  response.config.metadata.endTime = new Date().getTime();
+  response.durationInMS = response.config.metadata.endTime - response.config.metadata.startTime;
+  return response;
+}, function (error) {
+  error.config.metadata.endTime = new Date().getTime();
+  error.durationInMS = error.config.metadata.endTime - error.config.metadata.startTime;
+  throw error;
+});
 function initialLoad() {
   return _initialLoad.apply(this, arguments);
 }
 function _initialLoad() {
-  _initialLoad = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-    var startTime, response, endTime, breedList;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
+  _initialLoad = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+    var startTime, _yield$axios, data, durationInMS, endTime, breedList;
+    return _regeneratorRuntime().wrap(function _callee$(_context) {
+      while (1) switch (_context.prev = _context.next) {
         case 0:
           startTime = new Date().getTime();
-          _context2.next = 3;
-          return _axios.default.get("/v1/breeds");
+          _context.next = 3;
+          return (0, _axios.default)("/v1/breeds");
         case 3:
-          response = _context2.sent;
+          _yield$axios = _context.sent;
+          data = _yield$axios.data;
+          durationInMS = _yield$axios.durationInMS;
+          console.log("Request took ".concat(durationInMS, " milliseconds."));
           endTime = new Date().getTime();
           console.log(endTime - startTime, " naive way of getting time");
-          breedList = response.data; //setBreedList(response.data)
-          console.log(breedList);
-          console.log(breedSelect);
+          breedList = data; //setBreedList(response.data)
+          //console.log("breedlist ", breedList);
+          //console.log(breedSelect);
           breedList.forEach(function (breed) {
             var option = document.createElement("option");
             option.innerHTML = breed.name;
@@ -12307,11 +12329,11 @@ function _initialLoad() {
             breedSelect.append(option);
           });
           getBreedData();
-        case 11:
+        case 12:
         case "end":
-          return _context2.stop();
+          return _context.stop();
       }
-    }, _callee2);
+    }, _callee);
   }));
   return _initialLoad.apply(this, arguments);
 }
@@ -12336,33 +12358,31 @@ function getBreedData() {
   return _getBreedData.apply(this, arguments);
 }
 function _getBreedData() {
-  _getBreedData = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+  _getBreedData = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
     var breed_id, _yield$axios2, data, durationInMS, h1, h3;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
         case 0:
           progressBar.style.width = 0 + "%";
-          console.log(progressBar.style.width);
           Carousel.clear();
           infoDump.textContent = "";
           console.log(breedSelect.value);
           breed_id = breedSelect.value;
-          _context3.next = 8;
+          _context2.next = 7;
           return (0, _axios.default)("/v1/images/search?limit=10&breed_ids=".concat(breed_id, "&api_key=").concat(API_KEY), {
             onDownloadProgress: function onDownloadProgress(progressEvent) {
               var percentCompleted = Math.floor(progressEvent.loaded / progressEvent.total * 100);
               progressBar.style.width = percentCompleted + "%";
-              console.log(progressBar);
-              console.log(percentCompleted, " percentCompleted");
+              //console.log(progressBar);
+              //console.log(percentCompleted, " percentCompleted");
             }
           });
-        case 8:
-          _yield$axios2 = _context3.sent;
+        case 7:
+          _yield$axios2 = _context2.sent;
           data = _yield$axios2.data;
           durationInMS = _yield$axios2.durationInMS;
-          //const data = await response.data;
-          console.log(data, "====2nd===");
-          console.log(durationInMS, " durationInMS");
+          //console.log(data, "====2nd===");
+          console.log("Request took ".concat(durationInMS, " milliseconds."));
           carousle(data);
           h1 = document.createElement("h1");
           h3 = document.createElement("h3");
@@ -12370,11 +12390,11 @@ function _getBreedData() {
           h3.textContent = data[0].breeds[0].description;
           infoDump.append(h1);
           infoDump.append(h3);
-        case 20:
+        case 18:
         case "end":
-          return _context3.stop();
+          return _context2.stop();
       }
-    }, _callee3);
+    }, _callee2);
   }));
   return _getBreedData.apply(this, arguments);
 }
@@ -12405,42 +12425,13 @@ function carousle(data) {
  * - As an added challenge, try to do this on your own without referencing the lesson material.
  */
 
-_axios.default.interceptors.request.use(function (request) {
-  request.metadata = request.metadata || {};
-  request.metadata.startTime = new Date().getTime();
-  document.body.style.cursor = "progress";
-  return request;
-});
-_axios.default.interceptors.response.use(function (response) {
-  document.body.style.cursor = "default";
-  response.config.metadata.endTime = new Date().getTime();
-  response.durationInMS = response.config.metadata.endTime - response.config.metadata.startTime;
-  return response;
-}, function (error) {
-  error.config.metadata.endTime = new Date().getTime();
-  error.durationInMS = error.config.metadata.endTime - error.config.metadata.startTime;
-  throw error;
-});
-_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-  var url, _yield$axios, data, durationInMS;
-  return _regeneratorRuntime().wrap(function _callee$(_context) {
-    while (1) switch (_context.prev = _context.next) {
-      case 0:
-        url = "".concat(BASE_URL, "/v1/breeds?limit=10&page=0");
-        _context.next = 3;
-        return (0, _axios.default)(url);
-      case 3:
-        _yield$axios = _context.sent;
-        data = _yield$axios.data;
-        durationInMS = _yield$axios.durationInMS;
-        console.log("Request took ".concat(durationInMS, " milliseconds."));
-        console.log(data);
-      case 8:
-      case "end":
-        return _context.stop();
-    }
-  }, _callee);
-}))();
+// (async () => {
+//   const url = `${BASE_URL}/v1/breeds?limit=10&page=0`;
+
+//   const { data, durationInMS } = await axios(url);
+//   console.log(`Request took ${durationInMS} milliseconds.`);
+//   console.log(data);
+// })();
 
 /**
  * 6. Next, we'll create a progress bar to indicate the request is in progress.
@@ -12487,24 +12478,24 @@ function favourite(_x) {
  *    repeat yourself in this section.
  */
 function _favourite() {
-  _favourite = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(imgId) {
+  _favourite = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(imgId) {
     var response, getFavouritesList, favId;
-    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-      while (1) switch (_context5.prev = _context5.next) {
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
         case 0:
           //https://api.thecatapi.com/v1/favourites/favourite_id
 
           https: console.log(imgId, " image id");
-          _context5.next = 3;
+          _context4.next = 3;
           return (0, _axios.default)("/v1/favourites", {
             method: "get"
           });
         case 3:
-          response = _context5.sent;
-          _context5.next = 6;
+          response = _context4.sent;
+          _context4.next = 6;
           return response.data;
         case 6:
-          getFavouritesList = _context5.sent;
+          getFavouritesList = _context4.sent;
           console.log(getFavouritesList, "======>>>>>>>>>>>");
           favId = getFavouritesList.map(function (fav) {
             if (fav.image_id === imgId) {
@@ -12515,16 +12506,16 @@ function _favourite() {
           console.log(favId, " ===== favId");
           if (favId.length > 0) {
             favId.map(/*#__PURE__*/function () {
-              var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(ele) {
+              var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(ele) {
                 var _response;
-                return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-                  while (1) switch (_context4.prev = _context4.next) {
+                return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+                  while (1) switch (_context3.prev = _context3.next) {
                     case 0:
                       if (!ele) {
-                        _context4.next = 4;
+                        _context3.next = 4;
                         break;
                       }
-                      _context4.next = 3;
+                      _context3.next = 3;
                       return (0, _axios.default)("/v1/favourites/".concat(ele), {
                         method: "delete"
                       }).then(function (res) {
@@ -12533,25 +12524,23 @@ function _favourite() {
                         return console.error(err);
                       });
                     case 3:
-                      _response = _context4.sent;
+                      _response = _context3.sent;
                     case 4:
                     case "end":
-                      return _context4.stop();
+                      return _context3.stop();
                   }
-                }, _callee4);
+                }, _callee3);
               }));
               return function (_x2) {
-                return _ref2.apply(this, arguments);
+                return _ref.apply(this, arguments);
               };
             }());
           } else {
-            //response.data[0].image_id
             (0, _axios.default)("/v1/favourites", {
               method: "post",
               data: {
                 image_id: imgId
               }
-              // sub_id: "my-user-1234",
             }).then(function (res) {
               return console.log(res);
             }).catch(function (err) {
@@ -12562,9 +12551,9 @@ function _favourite() {
           // your code here
         case 11:
         case "end":
-          return _context5.stop();
+          return _context4.stop();
       }
-    }, _callee5);
+    }, _callee4);
   }));
   return _favourite.apply(this, arguments);
 }
@@ -12573,30 +12562,31 @@ function getFavourites() {
   return _getFavourites.apply(this, arguments);
 }
 function _getFavourites() {
-  _getFavourites = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+  _getFavourites = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
     var response, favouriteCatList;
-    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-      while (1) switch (_context6.prev = _context6.next) {
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
         case 0:
-          _context6.next = 2;
+          _context5.next = 2;
           return (0, _axios.default)("/v1/favourites");
         case 2:
-          response = _context6.sent;
-          _context6.next = 5;
+          response = _context5.sent;
+          _context5.next = 5;
           return response.data;
         case 5:
-          favouriteCatList = _context6.sent;
+          favouriteCatList = _context5.sent;
           console.log(favouriteCatList, " favouriteCatList");
           carousle2(favouriteCatList);
         case 8:
         case "end":
-          return _context6.stop();
+          return _context5.stop();
       }
-    }, _callee6);
+    }, _callee5);
   }));
   return _getFavourites.apply(this, arguments);
 }
 function carousle2(data) {
+  infoDump.textContent = "";
   Carousel.clear();
   data.forEach(function (d) {
     var x = Carousel.createCarouselItem(d.image.url, d.image.id, d.image.id);

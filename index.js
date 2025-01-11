@@ -14,7 +14,7 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 const API_KEY =
   "live_CqjPzip5jldepfygwt2QTbfQCD2m9U12uCqcrePmGPadzCaDJF0iwbrCcgwMla7T";
 
-const BASE_URL = "https://api.thecatapi.com/";
+//Setting Default headers
 
 axios.defaults.baseURL = "https://api.thecatapi.com/";
 axios.defaults.headers.common["x-api-key"] = API_KEY;
@@ -28,15 +28,39 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
  * This function should execute immediately.
  */
 
+axios.interceptors.request.use((request) => {
+  request.metadata = request.metadata || {};
+  request.metadata.startTime = new Date().getTime();
+  document.body.style.cursor = "progress";
+  return request;
+});
+
+axios.interceptors.response.use(
+  (response) => {
+    document.body.style.cursor = "default";
+    response.config.metadata.endTime = new Date().getTime();
+    response.durationInMS =
+      response.config.metadata.endTime - response.config.metadata.startTime;
+    return response;
+  },
+  (error) => {
+    error.config.metadata.endTime = new Date().getTime();
+    error.durationInMS =
+      error.config.metadata.endTime - error.config.metadata.startTime;
+    throw error;
+  }
+);
+
 async function initialLoad() {
   let startTime = new Date().getTime();
-  const response = await axios.get(`/v1/breeds`);
+  const { data, durationInMS } = await axios(`/v1/breeds`);
+  console.log(`Request took ${durationInMS} milliseconds.`);
   const endTime = new Date().getTime();
   console.log(endTime - startTime, " naive way of getting time");
-  const breedList = response.data;
+  const breedList = data;
   //setBreedList(response.data)
-  console.log(breedList);
-  console.log(breedSelect);
+  //console.log("breedlist ", breedList);
+  //console.log(breedSelect);
   breedList.forEach((breed) => {
     const option = document.createElement("option");
     option.innerHTML = breed.name;
@@ -65,11 +89,8 @@ breedSelect.addEventListener("change", getBreedData);
 
 async function getBreedData() {
   progressBar.style.width = 0 + "%";
-  console.log(progressBar.style.width);
   Carousel.clear();
-
   infoDump.textContent = "";
-
   console.log(breedSelect.value);
   const breed_id = breedSelect.value;
   const { data, durationInMS } = await axios(
@@ -80,14 +101,14 @@ async function getBreedData() {
           (progressEvent.loaded / progressEvent.total) * 100
         );
         progressBar.style.width = percentCompleted + "%";
-        console.log(progressBar);
-        console.log(percentCompleted, " percentCompleted");
+        //console.log(progressBar);
+        //console.log(percentCompleted, " percentCompleted");
       },
     }
   );
-  //const data = await response.data;
-  console.log(data, "====2nd===");
-  console.log(durationInMS, " durationInMS");
+
+  //console.log(data, "====2nd===");
+  console.log(`Request took ${durationInMS} milliseconds.`);
   carousle(data);
   let h1 = document.createElement("h1");
   let h3 = document.createElement("h3");
@@ -124,36 +145,13 @@ function carousle(data) {
  * - As an added challenge, try to do this on your own without referencing the lesson material.
  */
 
-axios.interceptors.request.use((request) => {
-  request.metadata = request.metadata || {};
-  request.metadata.startTime = new Date().getTime();
-  document.body.style.cursor = "progress";
-  return request;
-});
+// (async () => {
+//   const url = `${BASE_URL}/v1/breeds?limit=10&page=0`;
 
-axios.interceptors.response.use(
-  (response) => {
-    document.body.style.cursor = "default";
-    response.config.metadata.endTime = new Date().getTime();
-    response.durationInMS =
-      response.config.metadata.endTime - response.config.metadata.startTime;
-    return response;
-  },
-  (error) => {
-    error.config.metadata.endTime = new Date().getTime();
-    error.durationInMS =
-      error.config.metadata.endTime - error.config.metadata.startTime;
-    throw error;
-  }
-);
-
-(async () => {
-  const url = `${BASE_URL}/v1/breeds?limit=10&page=0`;
-
-  const { data, durationInMS } = await axios(url);
-  console.log(`Request took ${durationInMS} milliseconds.`);
-  console.log(data);
-})();
+//   const { data, durationInMS } = await axios(url);
+//   console.log(`Request took ${durationInMS} milliseconds.`);
+//   console.log(data);
+// })();
 
 /**
  * 6. Next, we'll create a progress bar to indicate the request is in progress.
@@ -215,13 +213,11 @@ export async function favourite(imgId) {
       }
     });
   } else {
-    //response.data[0].image_id
     axios(`/v1/favourites`, {
       method: "post",
       data: {
         image_id: imgId,
       },
-      // sub_id: "my-user-1234",
     })
       .then((res) => console.log(res))
       .catch((err) => console.error(err));
@@ -250,6 +246,7 @@ async function getFavourites() {
 }
 
 function carousle2(data) {
+  infoDump.textContent = "";
   Carousel.clear();
   data.forEach((d) => {
     const x = Carousel.createCarouselItem(d.image.url, d.image.id, d.image.id);
