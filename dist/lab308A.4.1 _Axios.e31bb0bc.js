@@ -6928,8 +6928,9 @@ function createCarouselItem(imgSrc, imgAlt, imgId) {
   var img = clone.querySelector("img");
   img.src = imgSrc;
   img.alt = imgAlt;
-  img.height = 400;
-  img.width = 400;
+  // img.height = 400;
+  // img.width = 400;
+
   var favBtn = clone.querySelector(".favourite-button");
   favBtn.addEventListener("click", function () {
     (0, _index.favourite)(imgId);
@@ -12268,7 +12269,9 @@ var progressBar = document.getElementById("progressBar");
 var getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
 // Step 0: Store your API key here for reference and easy access.
-var API_KEY = "live_CqjPzip5jldepfygwt2QTbfQCD2m9U12uCqcrePmGPadzCaDJF0iwbrCcgwMla7T";
+var API_KEY = "live_YiAHNqSkzkNraXr9G9DyhfdK7Mxo4AFKe37TyJElvL7rx1txZPecsvqA3vIfciCl";
+//"live_5NWTQ3A9wqVWJaBnVNRuPVIX5wLyJmHI1Yvah2XMQcilTG9MjYXKd2W46x4YdSIv";
+//"live_CqjPzip5jldepfygwt2QTbfQCD2m9U12uCqcrePmGPadzCaDJF0iwbrCcgwMla7T";
 
 //Setting Default headers
 
@@ -12359,7 +12362,7 @@ function getBreedData() {
 }
 function _getBreedData() {
   _getBreedData = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-    var breed_id, _yield$axios2, data, durationInMS, h1, h3;
+    var breed_id, _yield$axios$catch, data, durationInMS, h1, h3;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
@@ -12376,21 +12379,27 @@ function _getBreedData() {
               //console.log(progressBar);
               //console.log(percentCompleted, " percentCompleted");
             }
+          }).catch(function (err) {
+            return console.err("Error occured");
           });
         case 7:
-          _yield$axios2 = _context2.sent;
-          data = _yield$axios2.data;
-          durationInMS = _yield$axios2.durationInMS;
-          //console.log(data, "====2nd===");
+          _yield$axios$catch = _context2.sent;
+          data = _yield$axios$catch.data;
+          durationInMS = _yield$axios$catch.durationInMS;
+          console.log(data, "====2nd===");
           console.log("Request took ".concat(durationInMS, " milliseconds."));
-          carousle(data);
-          h1 = document.createElement("h1");
-          h3 = document.createElement("h3");
-          h1.textContent = data[0].breeds[0].name;
-          h3.textContent = data[0].breeds[0].description;
-          infoDump.append(h1);
-          infoDump.append(h3);
-        case 18:
+          if (data.length > 0) {
+            carousle(data);
+            h1 = document.createElement("h1");
+            h3 = document.createElement("h3");
+            h1.textContent = data[0].breeds[0].name;
+            h3.textContent = data[0].breeds[0].description;
+            infoDump.append(h1);
+            infoDump.append(h3);
+          } else {
+            infoDump.innerHTML = "<h1>Data does not exists</h1>";
+          }
+        case 13:
         case "end":
           return _context2.stop();
       }
@@ -12467,7 +12476,7 @@ function carousle(data) {
  */
 function favourite(_x) {
   return _favourite.apply(this, arguments);
-}
+} // your code here
 /**
  * 9. Test your favourite() function by creating a getFavourites() function.
  * - Use Axios to get all of your favourites from the cat API.
@@ -12502,29 +12511,29 @@ function _favourite() {
               console.log(fav.id);
               return fav.id;
             }
+          }).filter(function (ele) {
+            return ele !== undefined;
           });
           console.log(favId, " ===== favId");
           if (favId.length > 0) {
             favId.map(/*#__PURE__*/function () {
               var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(ele) {
-                var _response;
                 return _regeneratorRuntime().wrap(function _callee3$(_context3) {
                   while (1) switch (_context3.prev = _context3.next) {
                     case 0:
-                      if (!ele) {
+                      if (!(ele !== undefined)) {
                         _context3.next = 4;
                         break;
                       }
-                      _context3.next = 3;
+                      console.log(ele, " ele ");
+                      _context3.next = 4;
                       return (0, _axios.default)("/v1/favourites/".concat(ele), {
                         method: "delete"
-                      }).then(function (res) {
-                        return console.log(res, " deleting");
+                      }).then(function (response) {
+                        return console.log(response, " deleting");
                       }).catch(function (err) {
                         return console.error(err);
                       });
-                    case 3:
-                      _response = _context3.sent;
                     case 4:
                     case "end":
                       return _context3.stop();
@@ -12542,13 +12551,11 @@ function _favourite() {
                 image_id: imgId
               }
             }).then(function (res) {
-              return console.log(res);
+              return console.log(res, " posted successfully");
             }).catch(function (err) {
               return console.error(err);
             });
           }
-
-          // your code here
         case 11:
         case "end":
           return _context4.stop();
@@ -12568,7 +12575,7 @@ function _getFavourites() {
       while (1) switch (_context5.prev = _context5.next) {
         case 0:
           _context5.next = 2;
-          return (0, _axios.default)("/v1/favourites");
+          return (0, _axios.default)("/v1/favourites?limit=10");
         case 2:
           response = _context5.sent;
           _context5.next = 5;
@@ -12626,7 +12633,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62343" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64937" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

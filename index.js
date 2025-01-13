@@ -12,7 +12,9 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
 // Step 0: Store your API key here for reference and easy access.
 const API_KEY =
-  "live_CqjPzip5jldepfygwt2QTbfQCD2m9U12uCqcrePmGPadzCaDJF0iwbrCcgwMla7T";
+  "live_YiAHNqSkzkNraXr9G9DyhfdK7Mxo4AFKe37TyJElvL7rx1txZPecsvqA3vIfciCl";
+//"live_5NWTQ3A9wqVWJaBnVNRuPVIX5wLyJmHI1Yvah2XMQcilTG9MjYXKd2W46x4YdSIv";
+//"live_CqjPzip5jldepfygwt2QTbfQCD2m9U12uCqcrePmGPadzCaDJF0iwbrCcgwMla7T";
 
 //Setting Default headers
 
@@ -105,17 +107,21 @@ async function getBreedData() {
         //console.log(percentCompleted, " percentCompleted");
       },
     }
-  );
+  ).catch((err) => console.err("Error occured"));
 
-  //console.log(data, "====2nd===");
+  console.log(data, "====2nd===");
   console.log(`Request took ${durationInMS} milliseconds.`);
-  carousle(data);
-  let h1 = document.createElement("h1");
-  let h3 = document.createElement("h3");
-  h1.textContent = data[0].breeds[0].name;
-  h3.textContent = data[0].breeds[0].description;
-  infoDump.append(h1);
-  infoDump.append(h3);
+  if (data.length > 0) {
+    carousle(data);
+    let h1 = document.createElement("h1");
+    let h3 = document.createElement("h3");
+    h1.textContent = data[0].breeds[0].name;
+    h3.textContent = data[0].breeds[0].description;
+    infoDump.append(h1);
+    infoDump.append(h3);
+  } else {
+    infoDump.innerHTML = "<h1>Data does not exists</h1>";
+  }
 }
 
 function carousle(data) {
@@ -195,20 +201,23 @@ export async function favourite(imgId) {
   });
   const getFavouritesList = await response.data;
   console.log(getFavouritesList, "======>>>>>>>>>>>");
-  const favId = getFavouritesList.map((fav) => {
-    if (fav.image_id === imgId) {
-      console.log(fav.id);
-      return fav.id;
-    }
-  });
+  const favId = getFavouritesList
+    .map((fav) => {
+      if (fav.image_id === imgId) {
+        console.log(fav.id);
+        return fav.id;
+      }
+    })
+    .filter((ele) => ele !== undefined);
   console.log(favId, " ===== favId");
   if (favId.length > 0) {
     favId.map(async (ele) => {
-      if (ele) {
-        const response = await axios(`/v1/favourites/${ele}`, {
+      if (ele !== undefined) {
+        console.log(ele, " ele ");
+        await axios(`/v1/favourites/${ele}`, {
           method: "delete",
         })
-          .then((res) => console.log(res, " deleting"))
+          .then((response) => console.log(response, " deleting"))
           .catch((err) => console.error(err));
       }
     });
@@ -219,12 +228,11 @@ export async function favourite(imgId) {
         image_id: imgId,
       },
     })
-      .then((res) => console.log(res))
+      .then((res) => console.log(res, " posted successfully"))
       .catch((err) => console.error(err));
   }
-
-  // your code here
 }
+// your code here
 
 /**
  * 9. Test your favourite() function by creating a getFavourites() function.
@@ -239,7 +247,7 @@ export async function favourite(imgId) {
 getFavouritesBtn.addEventListener("click", getFavourites);
 
 async function getFavourites() {
-  const response = await axios(`/v1/favourites`);
+  const response = await axios(`/v1/favourites?limit=10`);
   const favouriteCatList = await response.data;
   console.log(favouriteCatList, " favouriteCatList");
   carousle2(favouriteCatList);
