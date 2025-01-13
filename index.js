@@ -55,7 +55,7 @@ axios.interceptors.response.use(
 
 async function initialLoad() {
   let startTime = new Date().getTime();
-  const { data, durationInMS } = await axios(`/v1/breeds`);
+  const { data, durationInMS } = await axios(`/v1/breeds?limit=10&page=0`);
   console.log(`Request took ${durationInMS} milliseconds.`);
   const endTime = new Date().getTime();
   console.log(endTime - startTime, " naive way of getting time");

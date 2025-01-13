@@ -12314,7 +12314,7 @@ function _initialLoad() {
         case 0:
           startTime = new Date().getTime();
           _context.next = 3;
-          return (0, _axios.default)("/v1/breeds");
+          return (0, _axios.default)("/v1/breeds?limit=10&page=0");
         case 3:
           _yield$axios = _context.sent;
           data = _yield$axios.data;
@@ -12633,7 +12633,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64937" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52284" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
