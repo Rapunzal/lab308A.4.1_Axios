@@ -6928,9 +6928,6 @@ function createCarouselItem(imgSrc, imgAlt, imgId) {
   var img = clone.querySelector("img");
   img.src = imgSrc;
   img.alt = imgAlt;
-  // img.height = 400;
-  // img.width = 400;
-
   var favBtn = clone.querySelector(".favourite-button");
   favBtn.addEventListener("click", function () {
     (0, _index.favourite)(imgId);
@@ -12287,6 +12284,7 @@ _axios.default.defaults.headers.post["Content-Type"] = "application/json";
  * This function should execute immediately.
  */
 
+//5.Using Interceptors to get the time
 _axios.default.interceptors.request.use(function (request) {
   request.metadata = request.metadata || {};
   request.metadata.startTime = new Date().getTime();
@@ -12314,7 +12312,7 @@ function _initialLoad() {
         case 0:
           startTime = new Date().getTime();
           _context.next = 3;
-          return (0, _axios.default)("/v1/breeds?limit=10&page=0");
+          return (0, _axios.default)("/v1/breeds");
         case 3:
           _yield$axios = _context.sent;
           data = _yield$axios.data;
@@ -12323,7 +12321,7 @@ function _initialLoad() {
           endTime = new Date().getTime();
           console.log(endTime - startTime, " naive way of getting time");
           breedList = data; //setBreedList(response.data)
-          //console.log("breedlist ", breedList);
+          console.log("breedlist ", breedList);
           //console.log(breedSelect);
           breedList.forEach(function (breed) {
             var option = document.createElement("option");
@@ -12332,7 +12330,7 @@ function _initialLoad() {
             breedSelect.append(option);
           });
           getBreedData();
-        case 12:
+        case 13:
         case "end":
           return _context.stop();
       }
@@ -12362,7 +12360,7 @@ function getBreedData() {
 }
 function _getBreedData() {
   _getBreedData = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-    var breed_id, _yield$axios$catch, data, durationInMS, h1, h3;
+    var breed_id, _yield$axios$catch, data, durationInMS, h1, temprament, p, str, h4, ul;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
@@ -12376,8 +12374,6 @@ function _getBreedData() {
             onDownloadProgress: function onDownloadProgress(progressEvent) {
               var percentCompleted = Math.floor(progressEvent.loaded / progressEvent.total * 100);
               progressBar.style.width = percentCompleted + "%";
-              //console.log(progressBar);
-              //console.log(percentCompleted, " percentCompleted");
             }
           }).catch(function (err) {
             return console.err("Error occured");
@@ -12391,11 +12387,25 @@ function _getBreedData() {
           if (data.length > 0) {
             carousle(data);
             h1 = document.createElement("h1");
-            h3 = document.createElement("h3");
-            h1.textContent = data[0].breeds[0].name;
-            h3.textContent = data[0].breeds[0].description;
+            temprament = document.createElement("h3");
+            p = document.createElement("p");
+            str = data[0].breeds[0].temperament;
+            str = str.split(",");
+            h4 = document.createElement("h2");
+            h4.textContent = "Temperament :";
+            ul = document.createElement("ul");
+            str = str.map(function (ele) {
+              var li = document.createElement("li");
+              li.append(ele);
+              ul.append(li);
+            });
+            temprament.textContent = str;
+            h1.textContent = "Breed Name : " + data[0].breeds[0].name;
+            p.textContent = data[0].breeds[0].description;
             infoDump.append(h1);
-            infoDump.append(h3);
+            infoDump.append(p);
+            infoDump.append(h4);
+            infoDump.append(ul);
           } else {
             infoDump.innerHTML = "<h1>Data does not exists</h1>";
           }

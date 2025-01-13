@@ -30,6 +30,7 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
  * This function should execute immediately.
  */
 
+//5.Using Interceptors to get the time
 axios.interceptors.request.use((request) => {
   request.metadata = request.metadata || {};
   request.metadata.startTime = new Date().getTime();
@@ -55,13 +56,13 @@ axios.interceptors.response.use(
 
 async function initialLoad() {
   let startTime = new Date().getTime();
-  const { data, durationInMS } = await axios(`/v1/breeds?limit=10&page=0`);
+  const { data, durationInMS } = await axios(`/v1/breeds`);
   console.log(`Request took ${durationInMS} milliseconds.`);
   const endTime = new Date().getTime();
   console.log(endTime - startTime, " naive way of getting time");
   const breedList = data;
   //setBreedList(response.data)
-  //console.log("breedlist ", breedList);
+  console.log("breedlist ", breedList);
   //console.log(breedSelect);
   breedList.forEach((breed) => {
     const option = document.createElement("option");
@@ -103,8 +104,6 @@ async function getBreedData() {
           (progressEvent.loaded / progressEvent.total) * 100
         );
         progressBar.style.width = percentCompleted + "%";
-        //console.log(progressBar);
-        //console.log(percentCompleted, " percentCompleted");
       },
     }
   ).catch((err) => console.err("Error occured"));
@@ -114,11 +113,26 @@ async function getBreedData() {
   if (data.length > 0) {
     carousle(data);
     let h1 = document.createElement("h1");
-    let h3 = document.createElement("h3");
-    h1.textContent = data[0].breeds[0].name;
-    h3.textContent = data[0].breeds[0].description;
+    let temprament = document.createElement("h3");
+    let p = document.createElement("p");
+    let str = data[0].breeds[0].temperament;
+    str = str.split(",");
+    const h4 = document.createElement("h2");
+    h4.textContent = "Temperament :";
+    const ul = document.createElement("ul");
+    str = str.map((ele) => {
+      const li = document.createElement("li");
+      li.append(ele);
+      ul.append(li);
+    });
+
+    temprament.textContent = str;
+    h1.textContent = "Breed Name : " + data[0].breeds[0].name;
+    p.textContent = data[0].breeds[0].description;
     infoDump.append(h1);
-    infoDump.append(h3);
+    infoDump.append(p);
+    infoDump.append(h4);
+    infoDump.append(ul);
   } else {
     infoDump.innerHTML = "<h1>Data does not exists</h1>";
   }

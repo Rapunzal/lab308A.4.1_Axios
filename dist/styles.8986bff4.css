@@ -78,6 +78,22 @@ body {
     height: 17em;
   }
 }
+h1 {
+  color: gray;
+}
+
+h2 {
+  margin: 20px;
+  font-size: 1.2rem;
+  font-style: italic;
+}
+p {
+  margin: 20px;
+  font-style: italic;
+}
+li {
+  font-style: italic;
+}
 
 
 /*# sourceMappingURL=/styles.8986bff4.css.map */
