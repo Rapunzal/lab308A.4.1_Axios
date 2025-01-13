@@ -93,10 +93,10 @@ async function getBreedData() {
     temprament.textContent = str;
     h1.textContent = "Breed Name : " + data[0].breeds[0].name;
     p.textContent = data[0].breeds[0].description;
-    // infoDump.append(h1);
-    // infoDump.append(p);
-    // infoDump.append(h4);
-    // infoDump.append(ul);
+    infoDump.append(h1);
+    infoDump.append(p);
+    infoDump.append(h4);
+    infoDump.append(ul);
   } else {
     infoDump.innerHTML = "<h1>Data does not exists</h1>";
   }
