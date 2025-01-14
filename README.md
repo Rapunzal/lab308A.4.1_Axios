@@ -16,6 +16,7 @@
 ## Features
 
 - Used fetch and axios to get data from the cat api.
+- Display all the cat breed list in dropdown.
 - Display the images in carousel from cat api.
 - Update Details o cat in div (info dump).
 - Using interceptors from axios to show progress bar, execution time and change the cursor.
