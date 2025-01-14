@@ -21,8 +21,8 @@ const API_KEY =
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
-
-async function initialLoad() {
+console.log("loading script js");
+async function initialLoad1() {
   const response = await fetch("https://api.thecatapi.com/v1/breeds");
   const breedList = await response.json();
   console.log(breedList);
@@ -35,7 +35,7 @@ async function initialLoad() {
   });
   // getBreedData();
 }
-initialLoad();
+initialLoad1();
 /**
  * 2. Create an event handler for breedSelect that does the following:
  * - Retrieve information on the selected breed from the cat API using fetch().
@@ -51,9 +51,9 @@ initialLoad();
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
 
-breedSelect.addEventListener("change", getBreedData);
+breedSelect.addEventListener("change", getBreedData1);
 
-async function getBreedData() {
+async function getBreedData1() {
   Carousel.clear();
   infoDump.textContent = "";
   //console.log(breedSelect.value);

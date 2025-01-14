@@ -13,8 +13,6 @@ const getFavouritesBtn = document.getElementById("getFavouritesBtn");
 // Step 0: Store your API key here for reference and easy access.
 const API_KEY =
   "live_YiAHNqSkzkNraXr9G9DyhfdK7Mxo4AFKe37TyJElvL7rx1txZPecsvqA3vIfciCl";
-//"live_5NWTQ3A9wqVWJaBnVNRuPVIX5wLyJmHI1Yvah2XMQcilTG9MjYXKd2W46x4YdSIv";
-//"live_CqjPzip5jldepfygwt2QTbfQCD2m9U12uCqcrePmGPadzCaDJF0iwbrCcgwMla7T";
 
 //Setting Default headers
 
@@ -107,8 +105,6 @@ async function getBreedData() {
       },
     }
   ).catch((err) => console.err("Error occured"));
-
-  console.log(data, "====2nd===");
   console.log(`Request took ${durationInMS} milliseconds.`);
   if (data.length > 0) {
     carousle(data);
@@ -139,6 +135,7 @@ async function getBreedData() {
 }
 
 function carousle(data) {
+  Carousel.clear();
   data.forEach((d) => {
     const x = Carousel.createCarouselItem(d.url, d.breeds[0].alt_names, d.id);
     Carousel.appendCarousel(x);
@@ -209,7 +206,7 @@ function carousle(data) {
 export async function favourite(imgId) {
   //https://api.thecatapi.com/v1/favourites/favourite_id
 
-  https: console.log(imgId, " image id");
+  console.log(imgId, " image id");
   const response = await axios(`/v1/favourites`, {
     method: "get",
   });

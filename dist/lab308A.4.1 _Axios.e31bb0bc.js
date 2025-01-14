@@ -12267,8 +12267,6 @@ var getFavouritesBtn = document.getElementById("getFavouritesBtn");
 
 // Step 0: Store your API key here for reference and easy access.
 var API_KEY = "live_YiAHNqSkzkNraXr9G9DyhfdK7Mxo4AFKe37TyJElvL7rx1txZPecsvqA3vIfciCl";
-//"live_5NWTQ3A9wqVWJaBnVNRuPVIX5wLyJmHI1Yvah2XMQcilTG9MjYXKd2W46x4YdSIv";
-//"live_CqjPzip5jldepfygwt2QTbfQCD2m9U12uCqcrePmGPadzCaDJF0iwbrCcgwMla7T";
 
 //Setting Default headers
 
@@ -12382,7 +12380,6 @@ function _getBreedData() {
           _yield$axios$catch = _context2.sent;
           data = _yield$axios$catch.data;
           durationInMS = _yield$axios$catch.durationInMS;
-          console.log(data, "====2nd===");
           console.log("Request took ".concat(durationInMS, " milliseconds."));
           if (data.length > 0) {
             carousle(data);
@@ -12409,7 +12406,7 @@ function _getBreedData() {
           } else {
             infoDump.innerHTML = "<h1>Data does not exists</h1>";
           }
-        case 13:
+        case 12:
         case "end":
           return _context2.stop();
       }
@@ -12418,6 +12415,7 @@ function _getBreedData() {
   return _getBreedData.apply(this, arguments);
 }
 function carousle(data) {
+  Carousel.clear();
   data.forEach(function (d) {
     var x = Carousel.createCarouselItem(d.url, d.breeds[0].alt_names, d.id);
     Carousel.appendCarousel(x);
@@ -12504,7 +12502,7 @@ function _favourite() {
         case 0:
           //https://api.thecatapi.com/v1/favourites/favourite_id
 
-          https: console.log(imgId, " image id");
+          console.log(imgId, " image id");
           _context4.next = 3;
           return (0, _axios.default)("/v1/favourites", {
             method: "get"
@@ -12643,7 +12641,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64213" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64845" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

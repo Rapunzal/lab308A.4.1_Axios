@@ -12214,7 +12214,7 @@ _axios.default.defaults.headers.post["Content-Type"] = "application/json";
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
-
+console.log("loading index.js");
 //5.Using Interceptors to get the time
 _axios.default.interceptors.request.use(function (request) {
   request.metadata = request.metadata || {};
@@ -12652,7 +12652,8 @@ var API_KEY = "live_5NWTQ3A9wqVWJaBnVNRuPVIX5wLyJmHI1Yvah2XMQcilTG9MjYXKd2W46x4Y
  *  - Each option should display text equal to the name of the breed.
  * This function should execute immediately.
  */
-function initialLoad() {
+console.log("loading script js");
+function initialLoad1() {
   return _initialLoad.apply(this, arguments);
 }
 function _initialLoad() {
@@ -12686,7 +12687,7 @@ function _initialLoad() {
   }));
   return _initialLoad.apply(this, arguments);
 }
-initialLoad();
+initialLoad1();
 /**
  * 2. Create an event handler for breedSelect that does the following:
  * - Retrieve information on the selected breed from the cat API using fetch().
@@ -12702,8 +12703,8 @@ initialLoad();
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
 
-breedSelect.addEventListener("change", getBreedData);
-function getBreedData() {
+breedSelect.addEventListener("change", getBreedData1);
+function getBreedData1() {
   return _getBreedData.apply(this, arguments);
 }
 /**
@@ -12873,7 +12874,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64454" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64845" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
