@@ -17,6 +17,11 @@
 
 - Used fetch and axios to get data from the cat api.
 - Display the images in carousel from cat api.
+- Update Details o cat in div (info dump).
 - Using interceptors from axios to show progress bar, execution time and change the cursor.
 - Allows to favourite a cat and display list on click of button.
 - Provide delete functionality to delets favourite cat.
+
+## Output
+
+![alt text](image-1.png)
