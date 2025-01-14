@@ -237,7 +237,10 @@ export async function favourite(imgId) {
         image_id: imgId,
       },
     })
-      .then((res) => console.log(res, " posted successfully"))
+      .then((res) => {
+        const x = document.querySelector(".favourite-button");
+        console.log(res, " posted successfully");
+      })
       .catch((err) => console.error(err));
   }
 }

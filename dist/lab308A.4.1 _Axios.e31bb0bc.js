@@ -12555,7 +12555,8 @@ function _favourite() {
                 image_id: imgId
               }
             }).then(function (res) {
-              return console.log(res, " posted successfully");
+              var x = document.querySelector(".favourite-button");
+              console.log(res, " posted successfully");
             }).catch(function (err) {
               return console.error(err);
             });
@@ -12637,7 +12638,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64306" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61122" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
