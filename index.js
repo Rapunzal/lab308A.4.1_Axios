@@ -32,12 +32,14 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.interceptors.request.use((request) => {
   request.metadata = request.metadata || {};
   request.metadata.startTime = new Date().getTime();
+  //7.Cursor style
   document.body.style.cursor = "progress";
   return request;
 });
 
 axios.interceptors.response.use(
   (response) => {
+    //7.Cursor style
     document.body.style.cursor = "default";
     response.config.metadata.endTime = new Date().getTime();
     response.durationInMS =
@@ -97,6 +99,7 @@ async function getBreedData() {
   const { data, durationInMS } = await axios(
     `/v1/images/search?limit=10&breed_ids=${breed_id}&api_key=${API_KEY}`,
     {
+      //6. Progress bar
       onDownloadProgress: (progressEvent) => {
         let percentCompleted = Math.floor(
           (progressEvent.loaded / progressEvent.total) * 100
@@ -162,14 +165,6 @@ function carousle(data) {
  * - As an added challenge, try to do this on your own without referencing the lesson material.
  */
 
-// (async () => {
-//   const url = `${BASE_URL}/v1/breeds?limit=10&page=0`;
-
-//   const { data, durationInMS } = await axios(url);
-//   console.log(`Request took ${durationInMS} milliseconds.`);
-//   console.log(data);
-// })();
-
 /**
  * 6. Next, we'll create a progress bar to indicate the request is in progress.
  * - The progressBar element has already been created for you.
@@ -211,7 +206,7 @@ export async function favourite(imgId) {
     method: "get",
   });
   const getFavouritesList = await response.data;
-  console.log(getFavouritesList, "======>>>>>>>>>>>");
+  console.log(getFavouritesList);
   const favId = getFavouritesList
     .map((fav) => {
       if (fav.image_id === imgId) {
@@ -228,7 +223,10 @@ export async function favourite(imgId) {
         await axios(`/v1/favourites/${ele}`, {
           method: "delete",
         })
-          .then((response) => console.log(response, " deleting"))
+          .then((response) => {
+            getFavourites();
+            console.log(response, " deleting");
+          })
           .catch((err) => console.error(err));
       }
     });

@@ -12286,10 +12286,12 @@ _axios.default.defaults.headers.post["Content-Type"] = "application/json";
 _axios.default.interceptors.request.use(function (request) {
   request.metadata = request.metadata || {};
   request.metadata.startTime = new Date().getTime();
+  //7.Cursor style
   document.body.style.cursor = "progress";
   return request;
 });
 _axios.default.interceptors.response.use(function (response) {
+  //7.Cursor style
   document.body.style.cursor = "default";
   response.config.metadata.endTime = new Date().getTime();
   response.durationInMS = response.config.metadata.endTime - response.config.metadata.startTime;
@@ -12369,6 +12371,7 @@ function _getBreedData() {
           breed_id = breedSelect.value;
           _context2.next = 7;
           return (0, _axios.default)("/v1/images/search?limit=10&breed_ids=".concat(breed_id, "&api_key=").concat(API_KEY), {
+            //6. Progress bar
             onDownloadProgress: function onDownloadProgress(progressEvent) {
               var percentCompleted = Math.floor(progressEvent.loaded / progressEvent.total * 100);
               progressBar.style.width = percentCompleted + "%";
@@ -12442,14 +12445,6 @@ function carousle(data) {
  * - As an added challenge, try to do this on your own without referencing the lesson material.
  */
 
-// (async () => {
-//   const url = `${BASE_URL}/v1/breeds?limit=10&page=0`;
-
-//   const { data, durationInMS } = await axios(url);
-//   console.log(`Request took ${durationInMS} milliseconds.`);
-//   console.log(data);
-// })();
-
 /**
  * 6. Next, we'll create a progress bar to indicate the request is in progress.
  * - The progressBar element has already been created for you.
@@ -12513,7 +12508,7 @@ function _favourite() {
           return response.data;
         case 6:
           getFavouritesList = _context4.sent;
-          console.log(getFavouritesList, "======>>>>>>>>>>>");
+          console.log(getFavouritesList);
           favId = getFavouritesList.map(function (fav) {
             if (fav.image_id === imgId) {
               console.log(fav.id);
@@ -12538,7 +12533,8 @@ function _favourite() {
                       return (0, _axios.default)("/v1/favourites/".concat(ele), {
                         method: "delete"
                       }).then(function (response) {
-                        return console.log(response, " deleting");
+                        getFavourites();
+                        console.log(response, " deleting");
                       }).catch(function (err) {
                         return console.error(err);
                       });
@@ -12641,7 +12637,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64845" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64306" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
